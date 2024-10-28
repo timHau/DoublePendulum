@@ -19,8 +19,20 @@ The motion of a double pendulum is governed by a set of coupled ordinary differe
 </p>
 <p align="center">A double Pendulum (Illustration from <a href="https://dassencio.org/46">here</a>) </p>
 
-There is no closed form solutions for $\theta_1$ and $\theta_2$ as functions of time, but it is possible to numerically solve for them
-using the [Runge Kutta](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) method.
+There is no closed form solutions for $\theta_1$ and $\theta_2$ as functions of time, but it is possible to numerically solve for them using the [Runge Kutta](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) method.
+To visualize the state of the double pendulum, one can map the angles of the two pendulums to a color.
+The x-axis represents the angle $\theta_1$ and the y-axis the angle $\theta_2$, both angles are mapped to a color via
+
+$$
+\begin{pmatrix}\theta_1 \\ \theta_2\end{pmatrix} \mapsto
+\begin{pmatrix}\frac{1}{2} + \frac{1}{2}
+  \begin{bmatrix}
+    -\sin(\theta_1) \cdot \cos(\theta_2) \\
+    \sin(\theta_1) \cdot \sin(\theta_2) \\
+    -\cos(\theta_1)
+  \end{bmatrix}
+\end{pmatrix}^{\frac{3}{4}}
+$$
 
 ## Getting Started
 
