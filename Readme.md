@@ -13,11 +13,11 @@ A double Pendulum is a physical system consisting of two pendulums attached to e
 The motion of a double pendulum is governed by a set of coupled ordinary differential equations and is chaotic in nature.
 
 <p align="center">
-  <figure>
+  <picture>
     <img width="373" align="top" alt="dp" src="https://github.com/user-attachments/assets/e913455a-c510-4245-b3a3-27056938a234">
-    <figcaption>A double Pendulum (Illustration from <a href="https://dassencio.org/46">here</a>) </figcaption>
-  </figure>
+  </picture>
 </p>
+<p align="center">A double Pendulum (Illustration from <a href="https://dassencio.org/46">here</a>) </p>
 
 There is no closed form solutions for $\theta_1$ and $\theta_2$ as functions of time, but it is possible to numerically solve for them
 using the [Runge Kutta](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) method.
