@@ -38,17 +38,16 @@ vertex VertexOut vertex_main(uint vertexId [[vertex_id]])
     return out;
 }
 
-// https://en.wikipedia.org/wiki/Double_pendulum#Lagrangian
-float4 derivative(float4 state)
+float4 derivative(float4 state, float2 masses, float2 lengths)
 {
     float2 theta = state.xy;
     float2 omega = state.zw;
  
     float gravity = 9.81;
-    float m1 = 1.0;
-    float m2 = 1.0;
-    float L1 = 1.0;
-    float L2 = 1.0;
+    float m1 = masses[0];
+    float m2 = masses[1];
+    float L1 = lengths[0];
+    float L2 = lengths[1];
     
     float cos_theta_xy = cos(theta.x - theta.y);
     float sin_theta_xy = sin(theta.x - theta.y);
@@ -63,21 +62,25 @@ float4 derivative(float4 state)
 }
 
 kernel void compute_main(texture2d<float, access::read_write> texture [[texture(0)]],
+                         device const float2 *massAndLength [[buffer(0)]],
                          uint2 id [[thread_position_in_grid]])
 {
     if (id.x >= texture.get_width() || id.y >= texture.get_height()) {
         return;
     }
     
+    float2 masses = massAndLength[0];
+    float2 lengths = massAndLength[1];
+    
     float4 color = texture.read(id);
     float4 y_n = color * (2.0 * M_PI_F) - M_PI_F; // [0, 1] --> [-π, π]
     
     // Runge Kutta 4
     float d_t = 0.01;
-    float4 k_1 = d_t * derivative(y_n);
-    float4 k_2 = d_t * derivative(y_n + 0.5 * k_1);
-    float4 k_3 = d_t * derivative(y_n + 0.5 * k_2);
-    float4 k_4 = d_t * derivative(y_n + k_3);
+    float4 k_1 = d_t * derivative(y_n, masses, lengths);
+    float4 k_2 = d_t * derivative(y_n + 0.5 * k_1, masses, lengths);
+    float4 k_3 = d_t * derivative(y_n + 0.5 * k_2, masses, lengths);
+    float4 k_4 = d_t * derivative(y_n + k_3, masses, lengths);
     y_n += (k_1 + k_4 + 2.0 * (k_2 + k_3)) / 6.0;
     
     y_n = (y_n + M_PI_F) / (2.0 * M_PI_F); // [-π, π] --> [0, 1]

@@ -15,6 +15,9 @@ class Renderer: NSObject, MTKViewDelegate {
     var texture: MTLTexture
     var width: Int
     var height: Int
+    
+    var lengths: SIMD2<Float> = SIMD2<Float>(1.0, 1.0);
+    var masses: SIMD2<Float> = SIMD2<Float>(1.0, 1.0);
 
     init(width: Int, height: Int) {
         self.width = width
@@ -81,6 +84,21 @@ class Renderer: NSObject, MTKViewDelegate {
         return texture
     }
     
+    func updateMassAndLength(masses: SIMD2<Float>, lengths: SIMD2<Float>) {
+        self.masses = masses
+        self.lengths = lengths
+        self.texture = Renderer.buildTexture(device: device, width: width, height: height)
+    }
+    
+    func massAndLengthBuffer() -> MTLBuffer {
+        let data = [masses, lengths]
+        return device.makeBuffer(
+            bytes: data,
+            length: MemoryLayout<SIMD2<Float>>.stride * data.count,
+            options: .storageModeShared
+        )!
+    }
+    
     func draw(in view: MTKView) {
         
         guard let drawable = view.currentDrawable else {
@@ -102,6 +120,8 @@ class Renderer: NSObject, MTKViewDelegate {
         let computeCommandEncoder = computeCommandBuffer.makeComputeCommandEncoder()!
         computeCommandEncoder.setComputePipelineState(computePipelineState)
         computeCommandEncoder.setTexture(texture, index: 0)
+        let massAndLengthBuffer = massAndLengthBuffer()
+        computeCommandEncoder.setBuffer(massAndLengthBuffer, offset: 0, index: 0)
         let gridSize = MTLSize(width: (width + 15) / 16, height: (height + 15) / 16, depth: 1)
         let threadGroupSize = MTLSize(width: 16, height: 16, depth: 1)
         computeCommandEncoder.dispatchThreadgroups(gridSize, threadsPerThreadgroup: threadGroupSize)

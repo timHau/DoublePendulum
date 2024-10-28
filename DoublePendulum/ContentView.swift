@@ -7,13 +7,19 @@
 
 import SwiftUI
 import MetalKit
+import simd
 
 struct ContentView: NSViewRepresentable {
     @Binding var width: CGFloat
     @Binding var height: CGFloat
+    @Binding var L1: Float
+    @Binding var L2: Float
+    @Binding var m1: Float
+    @Binding var m2: Float
     @Environment(\.openWindow) private var openWindow
 
     func makeCoordinator() -> Renderer {
+//        openWindow(id: "Controls")
         return Renderer(width: Int(width), height: Int(height))
     }
     
@@ -32,5 +38,8 @@ struct ContentView: NSViewRepresentable {
     }
     
     func updateNSView(_ uiView: MTKView, context: NSViewRepresentableContext<ContentView>) {
+        let masses = SIMD2<Float>(m1, m2)
+        let lengths = SIMD2<Float>(L1, L2)
+        context.coordinator.updateMassAndLength(masses: masses, lengths: lengths)
     }
 }

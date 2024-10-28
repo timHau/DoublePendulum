@@ -7,34 +7,29 @@
 import SwiftUI
 
 struct ControlsView: View {
-    @State private var gravity: Float = 9.81
-    @State private var L1: Float = 1.0
-    @State private var L2: Float = 1.0
-    @State private var m1: Float = 1.0
-    @State private var m2: Float = 1.0
+    @Binding var L1: Float
+    @Binding var L2: Float
+    @Binding var m1: Float
+    @Binding var m2: Float
 
     var body: some View {
         VStack {
-            HStack {
-                Text("Gravity: \(String(format: "%.2f", gravity))")
-                Slider(value: $gravity, in: 0.0...15.0, step: 0.1)
-            }
-            HStack{
+            Slider(value: $L1, in: 0.01...10.0, step: 0.5) {
                 Text("Length 1: \(String(format: "%.2f", L1))")
-                Slider(value: $L1, in: 0.01...15.0, step: 0.1)
             }
-            HStack {
-                Text("Length 1: \(String(format: "%.2f", L2))")
-                Slider(value: $L2, in: 0.01...15.0, step: 0.1)
+            .padding()
+            Slider(value: $L2, in: 0.01...10.0, step: 0.5) {
+                Text("Length 2: \(String(format: "%.2f", L2))")
             }
-            HStack {
+            .padding()
+            Slider(value: $m1, in: 0.5...5.0, step: 0.5) {
                 Text("Mass 1: \(String(format: "%.2f", m1))")
-                Slider(value: $m1, in: 0.5...5.0, step: 0.5)
             }
-            HStack {
+            .padding()
+            Slider(value: $m2, in: 0.5...5.0, step: 0.5) {
                 Text("Mass 2: \(String(format: "%.2f", m2))")
-                Slider(value: $m2, in: 0.5...5.0, step: 0.5)
             }
+            .padding()
         }
     }
 }
